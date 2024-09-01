@@ -1,0 +1,24 @@
+meta {
+  name: verify otp
+  type: http
+  seq: 4
+}
+
+post {
+  url: https://www.swiggy.com/dapi/auth/otp-verify
+  body: json
+  auth: none
+}
+
+headers {
+  Cookie: {{swiggy-cookies}}
+  Content-Type: application/json
+  User-Agent: {{useragent}}
+}
+
+body:json {
+  {
+    "otp": "",
+    "_csrf": {{csrf-token}}
+  }
+}

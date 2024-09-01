@@ -1,0 +1,29 @@
+meta {
+  name: visit swiggy
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://www.swiggy.com
+  body: none
+  auth: none
+}
+
+headers {
+  User-Agent: {{useragent}}
+}
+
+script:post-response {
+  let result = res.body;
+  let regex = /window\._csrfToken = "[^"]*"/i;
+  
+  let cookiesArray = res.getHeader('set-cookie');
+  let token = result.match(regex)[0].split('"')[1]
+  bru.setEnvVar('swiggy-csrf',token);
+   
+  const cookieHeader = cookiesArray.join('; ');
+  bru.setEnvVar('swiggy-cookies',cookieHeader);
+  console.log(cookiesArray);
+  console.log(cookieHeader);
+}
