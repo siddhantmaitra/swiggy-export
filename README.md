@@ -1,10 +1,10 @@
 # swiggy-export
 
-## Intent: 
+## Intent
 Backup my swiggy order & instamart info
 
 ## TODO
-- [ ] Perform Login
+- [x] Perform Login
 - [ ] Query orders
 - [ ] Query instamart orders
 - [ ] Save them to sqlite 
