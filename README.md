@@ -5,8 +5,8 @@ Backup my swiggy order & instamart info
 
 ## TODO
 - [x] Perform Login
-- [ ] Query orders
-- [ ] Query instamart orders
+- [x] Extract Orders
+- [ ] Extract instamart orders
 - [ ] Save them to sqlite
 
 ## Setup
