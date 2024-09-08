@@ -3,7 +3,7 @@ import { Database } from "bun:sqlite";
 
 const db = new Database(":memory:");
 
-const rawData = readFileSync('singleorder.json');
+const rawData = readFileSync('testdata/singleorder.json');
 const orders = JSON.parse(rawData);
 
 function extractOrderInfo(order) {

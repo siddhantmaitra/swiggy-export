@@ -26,8 +26,7 @@ const mobileNumber = process.env.MOBILE_NUMBER;
 let csrf = null;
 let requestCookies;
 let offsetID = '';
-let isExportComplete = false;
-let intervalID;
+let timeoutID;
 
 // Global cookie jar using a Set
 const cookieJar = new Set();
@@ -60,10 +59,6 @@ async function buildCookieHeader(response, cookieNameToRemove = null) {
 	return cookieHeader;
 }
 
-
-
-
-
 async function hitURL(url, options) {
 	const response = await fetch(url, options);
 	if (!response.ok) {
@@ -72,8 +67,6 @@ async function hitURL(url, options) {
 	}
 	return response;
 }
-
-
 
 async function visitSwiggy() {
 	const response = await hitURL(SWIGGY_BASE_URL, constOpts);
@@ -84,7 +77,6 @@ async function visitSwiggy() {
 
 	console.log("Visited Swiggy; Got csrf token");
 }
-
 
 async function generateOTP() {
 	let options = structuredClone(constOpts);
@@ -99,16 +91,12 @@ async function generateOTP() {
 	} else {
 		throw new Error("Mobile number is not set in env");
 	}
-
 	console.log("Hitting otp gen url ...");
 	await hitURL(SWIGGY_GENERATE_OTP_URL, options);
-
-	// console.log("OTP GENERATION: ", await response.json());
 }
 async function askQuestion(query) {
 	return new Promise(resolve => rl.question(query, resolve));
 }
-
 
 async function performLogin() {
 	let options = structuredClone(constOpts);
@@ -143,36 +131,27 @@ async function fetchOrderInfo() {
 
 	let res = await response.json();
 	console.log("orderArray creation ... ")
-	let orderArray = await res.data?.orders;
+	let orderArray = res.data?.orders;
 	console.log("orderArray creation done. Length is "+ orderArray.length);
 
 	if (res && (res.statusCode === 0) && orderArray?.length > 0) {
-		offsetID = await orderArray[orderArray.length - 1]?.order_id; //use .at(-1)?
+		offsetID = orderArray[orderArray.length - 1]?.order_id; //use .at(-1)?
 		console.log(`New offset ID: ${offsetID}\n`);
+
+		timeoutID = setTimeout(fetchOrderInfo, 5*1000);
 
 		writeFileSync(`exportdata/orders_${offsetID}.json`, JSON.stringify(orderArray, null, 2));
 	} else {
-		isExportComplete = true;
+		clearTimeout(timeoutID);
+		console.log(`Order fetch stopped`);
 	}
-}
-
-function getOrders() {
-	intervalID = setInterval(async () => {
-		if (!isExportComplete) {
-			console.log("\ngetOrders() called ...")
-			await fetchOrderInfo();
-		} else {
-			clearInterval(intervalID); // Stop the interval if the boolean is false
-			console.log(`Order fetch stopped`);
-		}
-	}, 15000); // TODO: Why does this take this long? 
 }
 
 async function main() {
 	await visitSwiggy();
 	await generateOTP();
 	await performLogin();
-	getOrders();
+	await fetchOrderInfo();
 }
 
 main();
