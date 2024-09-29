@@ -1,8 +1,10 @@
+import { exportData } from "./export";
 import { login } from "./login";
 
 
 async function main(){
-	await login();
+	const cookies = await login();
+	await exportData(cookies);
 }
 
 main();
