@@ -1,6 +1,7 @@
 import { constOpts, hitURL, SWIGGY_ORDER_URL } from "./utils";
+import {writeFileSync, } from 'fs';
 
-let offSetID : string;
+let offSetID : string = "";
 let timeoutID: number;
 
 export async function exportData(cookies : string){
@@ -10,13 +11,17 @@ export async function exportData(cookies : string){
 	headers.set("Content-Type","application/json");
 
 	console.log("hit order url", `${SWIGGY_ORDER_URL}${offSetID}`);
+
+	options.headers = headers;
 	
 	let response = await hitURL(`${SWIGGY_ORDER_URL}${offSetID}`, options);
 
 	let res = await response.json();
-	console.log("orderArray creation ... ")
-	let orderArray = res.data?.orders;
-	console.log("orderArray creation done. Length is "+ orderArray.length);
+	console.log("Response from Swiggy: ",res, "res.data: ", res?.data);
+	
+	let orderArray = await res.data?.orders;
+	
+	console.log("orderArray creation done. Length is ", orderArray.length);
 
 	if (res && (res.statusCode === 0) && orderArray?.length > 0) {
 		offSetID = orderArray[orderArray.length - 1]?.order_id; //use .at(-1)?
@@ -24,7 +29,7 @@ export async function exportData(cookies : string){
 
 		timeoutID = setTimeout(exportData, 5*1000);
 
-		// writeFileSync(`exportdata/orders_${offsetID}.json`, JSON.stringify(orderArray, null, 2));
+		writeFileSync(`exportdata/orders_${offSetID}.json`, JSON.stringify(orderArray, null, 2));
 	} else {
 		clearTimeout(timeoutID);
 		console.log(`Order fetch stopped`);
