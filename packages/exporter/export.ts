@@ -27,11 +27,11 @@ export async function exportData(cookies : string){
 		offSetID = orderArray[orderArray.length - 1]?.order_id; //use .at(-1)?
 		console.log(`New offset ID: ${offSetID}\n`);
 
-		timeoutID = setTimeout(exportData, 5*1000);
-
-		writeFileSync(`exportdata/orders_${offSetID}.json`, JSON.stringify(orderArray, null, 2));
+		// timeoutID = setTimeout(exportData, 5*1000);
+			
+		// writeFileSync(`exportdata/orders_${offSetID}.json`, JSON.stringify(orderArray, null, 2));
 	} else {
-		clearTimeout(timeoutID);
+		// clearTimeout(timeoutID);
 		console.log(`Order fetch stopped`);
 	}
 }
