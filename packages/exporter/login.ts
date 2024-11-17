@@ -3,7 +3,7 @@ import * as sw from "./utils";
 
 let csrf : string;
 let requestCookies : string;
-let mobileNumber: string = "8335852033";
+const mobileNumber = process.env.MOBILE_NUMBER;
 
 async function visitSwiggy() {
 	const response = await sw.hitURL(sw.SWIGGY_BASE_URL, sw.constOpts);
