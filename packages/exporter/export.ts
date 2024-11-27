@@ -12,8 +12,6 @@ export async function exportNewData(lastOrderID: string | null, cookies: string,
 			const precedingItems = orders.slice(0, targetIndex);
 			return precedingItems;
 		}
-		return orders;
-
 	}
 	return orders;
 }
@@ -32,24 +30,24 @@ async function exportData(cookies: string, userAgent: string, offSetID: string =
 	let response = await hitURL(`${SWIGGY_ORDER_URL}${offSetID}`, options);
 	let res = await response.json();
 
-	let orderArray = await res.data?.orders;
+	let orderArray = await res.data?.orders || [];
 
-	console.log("orderArray creation done. Length is ", orderArray.length);
+
 
 	if (res.statusCode != 0) {
-		throw new Error(`Order fetch failed. ${res.statusCode}`);
+		throw new Error(`Order fetch failed. \nstatusCode: ${res.statusCode} \nstatusMessage: ${res?.statusMessage}`);
 	}
-
+	let processedOrders : ExtractedOrder[] = [];
+	
 	if (res && (res.statusCode === 0) && orderArray?.length > 0) {
 		offSetID = orderArray[orderArray.length - 1]?.order_id; //use .at(-1)?
-
-		const processedOrders = orderArray.map(extractOrderInfo);
-
-		return processedOrders;
+		
+		processedOrders = orderArray.map(extractOrderInfo);
 
 	} else {
-		console.log(`Order fetch stopped`);
+		console.log(`Order fetch stopped \nstatusCode: ${res?.statusCode} \nstatusMessage: ${res?.statusMessage} `);
 	}
+	return processedOrders;
 }
 
 function extractOrderInfo(order: any) {
@@ -60,7 +58,7 @@ function extractOrderInfo(order: any) {
 		return acc;
 	}, {});
 
-	const extractedOrder = {
+	const extractedOrder: ExtractedOrder = {
 		order_id: order.order_id,
 		order_date: new Date(order.ordered_time_in_seconds * 1000).toISOString(),
 		delivery_date: new Date(order.delivered_time_in_seconds * 1000).toISOString(),
@@ -100,8 +98,8 @@ function extractOrderInfo(order: any) {
 		discount_applied: renderingDetails.discount_applied_coupon,
 		total_taxes: renderingDetails.total_taxes,
 		order_total_string: renderingDetails.order_total_string,
-		paymentMethod: order.paymentTransactions[0].paymentMethod,
-		paymentGateway: order.paymentTransactions[0].paymentGateway
+		// paymentMethod: order.paymentTransactions[0].paymentMethod, 
+		// paymentGateway: order.paymentTransactions[0].paymentGateway // this got removed :(
 	};
 
 	return extractedOrder;
