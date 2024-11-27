@@ -58,7 +58,7 @@ export async function generateOTP(userAgent: string, mobileNumber: string, reque
 
 export async function performLogin(userAgent: string, otp: string, requestCookies: string, csrf: string) {
 	let options = structuredClone(sw.constOpts);
-	// const otp = await sw.askInput('\nPlease enter the OTP: ');
+	
 
 	options.body = JSON.stringify({
 		"otp": otp,
@@ -85,8 +85,6 @@ export async function performLogin(userAgent: string, otp: string, requestCookie
 	} else {
 		throw new Error(`Login Failed. ${res.statusMessage}. ${response.status} .`);
 	}
-	// console.log(response);
-
 	return requestCookies;
 }
 
