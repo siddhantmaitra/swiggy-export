@@ -18,8 +18,8 @@ export type OrderItem = {
 	item_id: string;
 	external_item_id: string;
 	name: string;
-	is_veg: "1" | "0"; // Assuming "1" means veg and "0" means non-veg
-	variants: Variant[]; // Refined to include the structure of variant data
+	is_veg: "1" | "0";
+	variants: Variant[];
 	addons: unknown[]; // Can be refined if details are available
 	image_id: string;
 	quantity: string;
@@ -90,6 +90,6 @@ export type ExtractedOrder = {
 	discount_applied: string;
 	total_taxes: string;
 	order_total_string: string;
-	paymentMethod: string;
-	paymentGateway: string;
+	// paymentMethod: string;
+	// paymentGateway: string;
 };
