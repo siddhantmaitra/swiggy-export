@@ -2,6 +2,9 @@
 	"name": "swiggy-export",
 	"private": true,
 	"workspaces": [
-	  "packages/*"
-	]
-  }
+		"packages/*"
+	],
+	"devDependencies": {
+		"prettier": "3.4.1"
+	}
+}
