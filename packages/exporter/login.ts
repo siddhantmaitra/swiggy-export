@@ -44,7 +44,7 @@ export async function generateOTP(userAgent: string, mobileNumber: string, reque
 			"_csrf": csrf
 		});
 	} else {
-		throw new Error("Mobile number not provided.");
+		throw new Error("Mobile number not provided.",{ cause: { code: 400, message: "Mobile number is necessary"} });
 	}
 
 	console.log("Hitting otp gen url ...");
@@ -52,7 +52,7 @@ export async function generateOTP(userAgent: string, mobileNumber: string, reque
 	const res = await val.json();
 
 	if (res?.statusCode != 0) {
-		throw new Error(`Error in generating OTP. ${res.statusMessage}`)
+		throw new Error("Error in generating OTP.",{ cause: { code: res.statusCode, message: res.statusMessage }});
 	}
 }
 
@@ -83,7 +83,7 @@ export async function performLogin(userAgent: string, otp: string, requestCookie
 	if (response.ok && res.statusCode === 0) {
 		console.log("Login Succesful");
 	} else {
-		throw new Error(`Login Failed. ${res.statusMessage}. ${response.status} .`);
+		throw new Error("Login Failed.",{ cause: { code: res.statusCode, message: res.statusMessage }});
 	}
 	return requestCookies;
 }

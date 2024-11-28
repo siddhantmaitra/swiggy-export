@@ -34,17 +34,22 @@ async function exportData(cookies: string, userAgent: string, offSetID: string =
 
 
 	if (res.statusCode != 0) {
-		throw new Error(`Order fetch failed. \nstatusCode: ${res.statusCode} \nstatusMessage: ${res?.statusMessage}`);
+		throw new Error("Order fetch failed.",{ cause: { code: res.statusCode, message: res.statusMessage } });
+		
 	}
 	let processedOrders : ExtractedOrder[] = [];
 	
 	if (res && (res.statusCode === 0) && orderArray?.length > 0) {
 		offSetID = orderArray[orderArray.length - 1]?.order_id; //use .at(-1)?
 		
-		processedOrders = orderArray.map(extractOrderInfo);
+		try{
+			processedOrders = orderArray.map(extractOrderInfo);
+		}catch(err: any){
+			throw new Error("Order object array creation failed", {cause: {code: 500 , message: err.message}})
+		}
 
 	} else {
-		console.log(`Order fetch stopped \nstatusCode: ${res?.statusCode} \nstatusMessage: ${res?.statusMessage} `);
+		console.log("Order fetch stopped.",{ cause: { code: res.statusCode, message: res.statusMessage } });
 	}
 	return processedOrders;
 }
