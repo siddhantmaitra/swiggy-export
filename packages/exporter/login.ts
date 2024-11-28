@@ -1,49 +1,64 @@
 import * as sw from "./utils";
 
+export async function visitSwiggy(userAgent: string) {
+	let csrf: string;
+	let requestCookies: string;
 
-let csrf : string;
-let requestCookies : string;
-const mobileNumber = process.env.MOBILE_NUMBER;
+	let options = structuredClone(sw.constOpts);
+	let headers = new Headers(options.headers);
+	headers.set("User-Agent", userAgent);
+	headers.set("Content-Type", "application/json");
+	options.headers = headers;
 
-async function visitSwiggy() {
-	const response = await sw.hitURL(sw.SWIGGY_BASE_URL, sw.constOpts);
+	const response = await sw.hitURL(sw.SWIGGY_BASE_URL, options);
 	requestCookies = await sw.buildCookieHeader(response);
 	const res = await response.text();
+
 	let regex = /window\._csrfToken = "[^"]*"/i;
 	let matches = res.match(regex)
-	if(matches != null){
-		csrf= matches[0].split('"')[1]
-	}else{
+
+	if (matches != null) {
+		csrf = matches[0].split('"')[1]
+	} else {
 		throw new Error("Unable to find csrf token");
 	}
+
 	console.log("Visited Swiggy; Got csrf token");
+	return { csrf, requestCookies };
 }
 
-async function generateOTP() {
-	let options  = structuredClone(sw.constOpts);
-	
+export async function generateOTP(userAgent: string, mobileNumber: string, requestCookies: string, csrf: string) {
+	let options = structuredClone(sw.constOpts);
+
 	options.method = 'POST';
 
 	let headers = new Headers(options.headers);
 	headers.set("Cookie", requestCookies);
-	headers.set("Content-Type","application/json");
+	headers.set("Content-Type", "application/json");
+	headers.set("User-Agent", userAgent);
 	options.headers = headers;
-	
+
 	if (mobileNumber) {
 		options.body = JSON.stringify({
 			"mobile": mobileNumber,
 			"_csrf": csrf
 		});
 	} else {
-		throw new Error("Mobile number is not set in env");
+		throw new Error("Mobile number not provided.",{ cause: { code: 400, message: "Mobile number is necessary"} });
 	}
+
 	console.log("Hitting otp gen url ...");
 	const val = await sw.hitURL(sw.SWIGGY_GENERATE_OTP_URL, options);
+	const res = await val.json();
+
+	if (res?.statusCode != 0) {
+		throw new Error("Error in generating OTP.",{ cause: { code: res.statusCode, message: res.statusMessage }});
+	}
 }
 
-async function performLogin() {
+export async function performLogin(userAgent: string, otp: string, requestCookies: string, csrf: string) {
 	let options = structuredClone(sw.constOpts);
-	const otp = await sw.askInput('\nPlease enter the OTP: ');
+	
 
 	options.body = JSON.stringify({
 		"otp": otp,
@@ -54,25 +69,23 @@ async function performLogin() {
 	let headers = new Headers(options.headers);
 
 	headers.set("Cookie", requestCookies);
-	headers.set("Content-Type","application/json");
+	headers.set("Content-Type", "application/json");
+	headers.set("User-Agent", userAgent);
 	options.headers = headers;
 
 	console.log("Hitting login url ...");
 
 	const response = await sw.hitURL(sw.SWIGGY_LOGIN_URL, options);
-
+	const res = await response.json();
 	// update them cookies and remove tid coz we logged in
 	requestCookies = await sw.buildCookieHeader(response, '_guest_tid');
-	console.log(response.ok ?"Logged In" : "Login failed");
-	// console.log(response);
-	
-	return requestCookies;
-}
 
-export async function login() {
-	await visitSwiggy();
-	await generateOTP();
-	return await performLogin();
+	if (response.ok && res.statusCode === 0) {
+		console.log("Login Succesful");
+	} else {
+		throw new Error("Login Failed.",{ cause: { code: res.statusCode, message: res.statusMessage }});
+	}
+	return requestCookies;
 }
 
 
