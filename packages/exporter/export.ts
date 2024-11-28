@@ -2,7 +2,6 @@ import { constOpts, hitURL, SWIGGY_ORDER_URL } from "./utils";
 import type { OrderItem, ExtractedOrder } from "./types";
 
 export async function exportNewData(lastOrderID: string | null, cookies: string, userAgent: string, offSetID: string = "") {
-
 	const orders: ExtractedOrder[] = await exportData(cookies, userAgent, offSetID);
 
 	if (lastOrderID) {
@@ -70,12 +69,13 @@ function extractOrderInfo(order: any) {
 			if (item.has_variantv2) {
 				return item.variants.map(variant => ({
 					name: `${item.name} - ${variant.name}`,
-					price: variant.price.toString()
+					price: variant.price.toString(),
+					quantity: "1"
 				}));
 			} else {
 				return [{
 					name: item.name,
-					base_price: item.base_price.toString(),
+					price: item.base_price.toString(),
 					quantity: item.quantity
 				}];
 			}
@@ -87,17 +87,17 @@ function extractOrderInfo(order: any) {
 		rain_mode: order.rain_mode,
 		is_veg: order.order_items.every((item: OrderItem) => item.is_veg === "1"),
 		is_gourmet: order.is_gourmet,
-		rating_meta: {
+		rating: {
 			restaurant_rating: order.rating_meta.restaurant_rating.rating,
 			delivery_rating: order.rating_meta.delivery_rating.rating
 		},
 		item_total: renderingDetails.item_total,
 		order_packing_charges: renderingDetails.order_packing_charges,
 		platform_fees: renderingDetails.partial_platform_fees || renderingDetails.platform_fees,
-		delivery_charges: renderingDetails.delivery_charges_swiggy_one,
+		delivery_charges: renderingDetails.delivery_charges_swiggy_one === "FREE"? "0" :renderingDetails.delivery_charges_swiggy_one,
 		discount_applied: renderingDetails.discount_applied_coupon,
 		total_taxes: renderingDetails.total_taxes,
-		order_total_string: renderingDetails.order_total_string,
+		order_total: renderingDetails.order_total_string,
 		// paymentMethod: order.paymentTransactions[0].paymentMethod, 
 		// paymentGateway: order.paymentTransactions[0].paymentGateway // this got removed :(
 	};

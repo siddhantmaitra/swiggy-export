@@ -48,15 +48,8 @@ export type OrderItem = {
 	in_stock: number;
 };
 
-
-type VariantOrderItem = {
+type Item = {
 	name: string;
-	price: string;
-};
-
-type FlatOrderItem = {
-	name: string;
-	base_price?: string;
 	price?: string;
 	quantity?: string;
 };
@@ -73,8 +66,8 @@ export type ExtractedOrder = {
 	restaurant_id: string | number;
 	restaurant_name: string;
 	restaurant_city: string;
-	restaurant_cuisine: string;
-	items: (VariantOrderItem | FlatOrderItem)[];
+	restaurant_cuisine: string[];
+	items: Item[];
 	coupon_applied: boolean;
 	order_status: string;
 	is_long_distance: boolean;
@@ -82,14 +75,14 @@ export type ExtractedOrder = {
 	rain_mode: string;
 	is_veg: boolean;
 	is_gourmet: boolean;
-	rating_meta: Rating;
+	rating: Rating;
 	item_total: string;
 	order_packing_charges: string;
 	platform_fees: string;
 	delivery_charges: string;
 	discount_applied: string;
 	total_taxes: string;
-	order_total_string: string;
+	order_total: string;
 	// paymentMethod: string;
 	// paymentGateway: string;
 };
