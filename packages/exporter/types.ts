@@ -18,7 +18,7 @@ export type OrderItem = {
 	item_id: string;
 	external_item_id: string;
 	name: string;
-	is_veg: "1" | "0";
+	is_veg: '1' | '0';
 	variants: Variant[];
 	addons: unknown[]; // Can be refined if details are available
 	image_id: string;

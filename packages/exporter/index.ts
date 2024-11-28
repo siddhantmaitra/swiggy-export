@@ -1,1 +1,1 @@
-export { visitSwiggy, generateOTP, performLogin } from "./login";
+export { visitSwiggy, generateOTP, performLogin } from './login';

@@ -1,7 +1,12 @@
-import { constOpts, hitURL, SWIGGY_ORDER_URL } from "./utils";
-import type { OrderItem, ExtractedOrder } from "./types";
+import { constOpts, hitURL, SWIGGY_ORDER_URL } from './utils';
+import type { OrderItem, ExtractedOrder } from './types';
 
-export async function exportNewData(lastOrderID: string | null, cookies: string, userAgent: string, offSetID: string = "") {
+export async function exportNewData(
+	lastOrderID: string | null,
+	cookies: string,
+	userAgent: string,
+	offSetID: string = ''
+) {
 	const orders: ExtractedOrder[] = await exportData(cookies, userAgent, offSetID);
 
 	if (lastOrderID) {
@@ -15,41 +20,36 @@ export async function exportNewData(lastOrderID: string | null, cookies: string,
 	return orders;
 }
 
-
-async function exportData(cookies: string, userAgent: string, offSetID: string = "") {
+async function exportData(cookies: string, userAgent: string, offSetID: string = '') {
 	let options = structuredClone(constOpts);
 
 	const headers = new Headers(options.headers);
-	headers.set("Cookie", cookies);
-	headers.set("Content-Type", "application/json");
-	headers.set("User-Agent", userAgent);
+	headers.set('Cookie', cookies);
+	headers.set('Content-Type', 'application/json');
+	headers.set('User-Agent', userAgent);
 
 	options.headers = headers;
 
 	let response = await hitURL(`${SWIGGY_ORDER_URL}${offSetID}`, options);
 	let res = await response.json();
 
-	let orderArray = await res.data?.orders || [];
-
-
+	let orderArray = (await res.data?.orders) || [];
 
 	if (res.statusCode != 0) {
-		throw new Error("Order fetch failed.",{ cause: { code: res.statusCode, message: res.statusMessage } });
-		
+		throw new Error('Order fetch failed.', { cause: { code: res.statusCode, message: res.statusMessage } });
 	}
-	let processedOrders : ExtractedOrder[] = [];
-	
-	if (res && (res.statusCode === 0) && orderArray?.length > 0) {
-		offSetID = orderArray[orderArray.length - 1]?.order_id; //use .at(-1)?
-		
-		try{
-			processedOrders = orderArray.map(extractOrderInfo);
-		}catch(err: any){
-			throw new Error("Order object array creation failed", {cause: {code: 500 , message: err.message}})
-		}
+	let processedOrders: ExtractedOrder[] = [];
 
+	if (res && res.statusCode === 0 && orderArray?.length > 0) {
+		offSetID = orderArray[orderArray.length - 1]?.order_id; //use .at(-1)?
+
+		try {
+			processedOrders = orderArray.map(extractOrderInfo);
+		} catch (err: any) {
+			throw new Error('Order object array creation failed', { cause: { code: 500, message: err.message } });
+		}
 	} else {
-		console.log("Order fetch stopped.",{ cause: { code: res.statusCode, message: res.statusMessage } });
+		console.log('Order fetch stopped.', { cause: { code: res.statusCode, message: res.statusMessage } });
 	}
 	return processedOrders;
 }
@@ -72,17 +72,19 @@ function extractOrderInfo(order: any) {
 		restaurant_cuisine: order.restaurant_cuisine,
 		items: order.order_items.flatMap((item: OrderItem) => {
 			if (item.has_variantv2) {
-				return item.variants.map(variant => ({
+				return item.variants.map((variant) => ({
 					name: `${item.name} - ${variant.name}`,
 					price: variant.price.toString(),
-					quantity: "1"
+					quantity: '1',
 				}));
 			} else {
-				return [{
-					name: item.name,
-					price: item.base_price.toString(),
-					quantity: item.quantity
-				}];
+				return [
+					{
+						name: item.name,
+						price: item.base_price.toString(),
+						quantity: item.quantity,
+					},
+				];
 			}
 		}),
 		coupon_applied: order.coupon_applied,
@@ -90,20 +92,21 @@ function extractOrderInfo(order: any) {
 		is_long_distance: order.is_long_distance,
 		on_time: order.on_time,
 		rain_mode: order.rain_mode,
-		is_veg: order.order_items.every((item: OrderItem) => item.is_veg === "1"),
+		is_veg: order.order_items.every((item: OrderItem) => item.is_veg === '1'),
 		is_gourmet: order.is_gourmet,
 		rating: {
 			restaurant_rating: order.rating_meta.restaurant_rating.rating,
-			delivery_rating: order.rating_meta.delivery_rating.rating
+			delivery_rating: order.rating_meta.delivery_rating.rating,
 		},
 		item_total: renderingDetails.item_total,
 		order_packing_charges: renderingDetails.order_packing_charges,
 		platform_fees: renderingDetails.partial_platform_fees || renderingDetails.platform_fees,
-		delivery_charges: renderingDetails.delivery_charges_swiggy_one === "FREE"? "0" :renderingDetails.delivery_charges_swiggy_one,
+		delivery_charges:
+			renderingDetails.delivery_charges_swiggy_one === 'FREE' ? '0' : renderingDetails.delivery_charges_swiggy_one,
 		discount_applied: renderingDetails.discount_applied_coupon,
 		total_taxes: renderingDetails.total_taxes,
 		order_total: renderingDetails.order_total_string,
-		// paymentMethod: order.paymentTransactions[0].paymentMethod, 
+		// paymentMethod: order.paymentTransactions[0].paymentMethod,
 		// paymentGateway: order.paymentTransactions[0].paymentGateway // this got removed :(
 	};
 
