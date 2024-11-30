@@ -1,5 +1,4 @@
 import { constOpts, hitURL, SWIGGY_ORDER_URL } from './utils';
-import type { OrderItem, ExtractedOrder, Item} from './types';
 
 export async function exportNewData(
 	lastOrderID: string | null,

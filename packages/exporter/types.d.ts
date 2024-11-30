@@ -19,7 +19,7 @@ type Addon = {
 	};
 };
 
-export type OrderItem = {
+type OrderItem = {
 	item_key: string;
 	has_variantv2: boolean;
 	item_group_tag_id: string;
@@ -59,7 +59,7 @@ export type OrderItem = {
 	in_stock: number;
 };
 
-export type Item = {
+type Item = {
 	name: string;
 	price?: string;
 	quantity?: string;
@@ -72,7 +72,7 @@ type Rating = {
 	delivery_rating: number;
 };
 
-export type ExtractedOrder = {
+type ExtractedOrder = {
 	order_id: string | number;
 	order_date: string;
 	delivery_date: string;
