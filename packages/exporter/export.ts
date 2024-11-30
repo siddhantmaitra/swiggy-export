@@ -1,5 +1,5 @@
 import { constOpts, hitURL, SWIGGY_ORDER_URL } from './utils';
-import type { OrderItem, ExtractedOrder } from './types';
+import type { OrderItem, ExtractedOrder, Item} from './types';
 
 export async function exportNewData(
 	lastOrderID: string | null,
@@ -71,21 +71,28 @@ function extractOrderInfo(order: any) {
 		restaurant_city: order.restaurant_city_name,
 		restaurant_cuisine: order.restaurant_cuisine,
 		items: order.order_items.flatMap((item: OrderItem) => {
-			if (item.has_variantv2) {
-				return item.variants.map((variant) => ({
-					name: `${item.name} - ${variant.name}`,
-					price: variant.price.toString(),
-					quantity: '1',
+			let thing: Item = {
+				name: item.name,
+				price: item.base_price.toString(),
+				quantity: item.quantity,
+				variants: [],
+				addons: []
+			};
+			if (item.variants.length > 0) {
+				thing.variants = item.variants.map((variant) => ({
+					name: variant.name,
+					price: variant.price,
 				}));
-			} else {
-				return [
-					{
-						name: item.name,
-						price: item.base_price.toString(),
-						quantity: item.quantity,
-					},
-				];
 			}
+
+			if (item.addons.length > 0) {
+				thing.addons = item.addons.map((addon) => ({
+					name: addon.name,
+					price: addon.price,
+				}));
+			}
+
+			return thing;
 		}),
 		coupon_applied: order.coupon_applied,
 		order_status: order.order_status,
@@ -103,7 +110,7 @@ function extractOrderInfo(order: any) {
 		platform_fees: renderingDetails.partial_platform_fees || renderingDetails.platform_fees,
 		delivery_charges:
 			renderingDetails.delivery_charges_swiggy_one === 'FREE' ? '0' : renderingDetails.delivery_charges_swiggy_one,
-		discount_applied: renderingDetails.discount_applied_coupon,
+		discount_applied: renderingDetails.discount_applied_coupon || renderingDetails.discount_applied,
 		total_taxes: renderingDetails.total_taxes,
 		order_total: renderingDetails.order_total_string,
 		// paymentMethod: order.paymentTransactions[0].paymentMethod,
