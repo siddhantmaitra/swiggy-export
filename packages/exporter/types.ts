@@ -7,6 +7,17 @@ type Variant = {
 	external_group_id: string;
 	variant_tax_charges: Record<string, string>; // Example: {"GST": "0.0"}
 };
+type Addon = {
+	choice_id: string;
+	group_id: string;
+	name: string;
+	price: number;
+	external_choice_id: string;
+	external_group_id: string;
+	addon_tax_charges: {
+		GST: string;
+	};
+};
 
 export type OrderItem = {
 	item_key: string;
@@ -20,7 +31,7 @@ export type OrderItem = {
 	name: string;
 	is_veg: '1' | '0';
 	variants: Variant[];
-	addons: unknown[]; // Can be refined if details are available
+	addons: Addon[];
 	image_id: string;
 	quantity: string;
 	free_item_quantity: string;
@@ -48,10 +59,12 @@ export type OrderItem = {
 	in_stock: number;
 };
 
-type Item = {
+export type Item = {
 	name: string;
 	price?: string;
 	quantity?: string;
+	variants?: any[]; // think of better def
+	addons?: any[]; // think of better def
 };
 
 type Rating = {
