@@ -1,13 +1,3 @@
-import { createInterface } from 'node:readline';
-
-export const rl = createInterface({
-	input: process.stdin,
-	output: process.stdout,
-});
-
-export async function askInput(query: string) {
-	return new Promise<string>((resolve) => rl.question(query, resolve));
-}
 
 // const userAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36";
 
