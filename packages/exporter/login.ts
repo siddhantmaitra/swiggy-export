@@ -3,7 +3,9 @@ import * as sw from './utils';
 export async function visitSwiggy(userAgent: string) {
 	let csrf: string;
 	let requestCookies: string;
-
+	if(!userAgent){
+		throw new Error ("User-Agent is not received", { cause: { code: 400, message: 'User-Agent is necessary' } });
+	}
 	let options = structuredClone(sw.constOpts);
 	let headers = new Headers(options.headers);
 	headers.set('User-Agent', userAgent);
