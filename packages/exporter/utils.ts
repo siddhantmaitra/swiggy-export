@@ -1,5 +1,6 @@
-
 // const userAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36";
+
+import SwiggyError from './SwiggyError';
 
 export const constOpts: RequestInit = {
 	headers: {
@@ -17,11 +18,10 @@ export async function hitURL(url: string, options: RequestInit) {
 
 	console.log('Response status:  ', response.status, response.statusText);
 	console.log('Response headers: ', response.headers);
-	// console.log("Response body: ", await response.text())
 
 	if (!response.ok) {
 		const message = `An error has occured: ${response.status} , ${response.statusText}`;
-		throw new Error(message);
+		throw new SwiggyError(message, response.status, response.statusText);
 	}
 	return response;
 }
