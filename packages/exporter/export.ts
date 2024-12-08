@@ -1,3 +1,4 @@
+import SwiggyError from './SwiggyError';
 import { constOpts, hitURL, SWIGGY_ORDER_URL } from './utils';
 
 export async function exportNewData(
@@ -35,7 +36,7 @@ async function exportData(cookies: string, userAgent: string, offSetID: string =
 	let orderArray = (await res.data?.orders) || [];
 
 	if (res.statusCode != 0) {
-		throw new Error('Order fetch failed.', { cause: { code: res.statusCode, message: res.statusMessage } });
+		throw new SwiggyError('Order fetch failed.', res.statusCode, res.statusMessage);
 	}
 	let processedOrders: ExtractedOrder[] = [];
 
@@ -45,7 +46,7 @@ async function exportData(cookies: string, userAgent: string, offSetID: string =
 		try {
 			processedOrders = orderArray.map(extractOrderInfo);
 		} catch (err: any) {
-			throw new Error('Order object array creation failed', { cause: { code: 500, message: err.message } });
+			throw new SwiggyError('Order object array creation failed', 500, err.message);
 		}
 	} else {
 		console.log('Order fetch stopped.', { cause: { code: res.statusCode, message: res.statusMessage } });
@@ -75,7 +76,7 @@ function extractOrderInfo(order: any) {
 				price: item.base_price.toString(),
 				quantity: item.quantity,
 				variants: [],
-				addons: []
+				addons: [],
 			};
 			if (item.variants.length > 0) {
 				thing.variants = item.variants.map((variant) => ({
@@ -112,8 +113,6 @@ function extractOrderInfo(order: any) {
 		discount_applied: renderingDetails.discount_applied_coupon || renderingDetails.discount_applied,
 		total_taxes: renderingDetails.total_taxes,
 		order_total: renderingDetails.order_total_string,
-		// paymentMethod: order.paymentTransactions[0].paymentMethod,
-		// paymentGateway: order.paymentTransactions[0].paymentGateway // this got removed :(
 	};
 
 	return extractedOrder;
