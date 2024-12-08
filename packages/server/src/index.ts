@@ -17,6 +17,16 @@ app.get('/login/tokens', async (c) => {
 	return c.json('Failed to get CSRF token from swiggy.com', 500);
 });
 
+// Generate otp
+app.post('login/otp', async (c) => {
+	const ua = c.req.header('User-Agent') ?? '';
+});
+
+// Login user
+app.post('login/auth', async (c) => {
+	const ua = c.req.header('User-Agent') ?? '';
+});
+
 app.onError((err, c) => {
 	if (err instanceof SwiggyError) {
 		return c.json(
