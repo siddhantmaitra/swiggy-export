@@ -19,8 +19,21 @@ app.get('/login', async (c) => {
 });
 
 // Generate otp
-app.post('login/otp', async (c) => {
+app.post('/login/otp', async (c) => {
 	const ua = c.req.header('User-Agent') ?? '';
+	const body = await c.req.json();
+	const csrf = getCookie(c, 'request-csrf');
+	const requestCookies = getCookie(c, 'request-cookies');
+
+	if (!requestCookies || !csrf) {
+		throw new SwiggyError('csrf or requestCookies are invalid', 400);
+	} else {
+		await exporter.generateOTP(ua, body.mobileNumber, requestCookies, csrf);
+		return c.json(
+			{ status: 'Success', code: 0, message: 'Generated OTP Successfully', data: { csrf, requestCookies } },
+			200
+		);
+	}
 });
 
 // Login user
