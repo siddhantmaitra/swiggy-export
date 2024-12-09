@@ -11,9 +11,9 @@ app.get('/login', async (c) => {
 
 	const data = await exporter.visitSwiggy(ua);
 	if (Object.keys(data).length) {
-		setCookie(c, 'request_cookies', data.requestCookies, { path: '/', httpOnly: true });
-		setCookie(c, 'request_csrf', data.csrf, { path: '/login', httpOnly: true });
-		return c.json({ status: 'Success', code: 0, data: data }, 200);
+		setCookie(c, 'request-cookies', data.requestCookies, { path: '/', httpOnly: true });
+		setCookie(c, 'request-csrf', data.csrf, { path: '/login', httpOnly: true });
+		return c.json({ status: 'Success', code: 0, message: 'Acquired CSRF token', data: data }, 200);
 	}
 	return c.json('Failed to get CSRF token from swiggy.com', 500);
 });
