@@ -1,0 +1,23 @@
+meta {
+  name: login-auth
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/login/auth
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  User-Agent: {{useragent}}
+}
+
+body:json {
+  {
+    "otp": ""
+  }
+}

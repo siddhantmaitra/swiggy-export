@@ -1,0 +1,23 @@
+meta {
+  name: login-otp
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/login/otp
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  User-Agent: {{useragent}}
+}
+
+body:json {
+  {
+    "mobileNumber": {{mobileNumber}}
+  }
+}
