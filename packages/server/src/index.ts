@@ -37,8 +37,21 @@ app.post('/login/otp', async (c) => {
 });
 
 // Login user
-app.post('login/auth', async (c) => {
+app.post('/login/auth', async (c) => {
 	const ua = c.req.header('User-Agent') ?? '';
+	const body = await c.req.json();
+	const csrf = getCookie(c, 'request-csrf');
+	let requestCookies = getCookie(c, 'request-cookies');
+
+	if (!requestCookies || !csrf) {
+		throw new SwiggyError('csrf or requestCookies are invalid', 400);
+	} else {
+		requestCookies = await exporter.performLogin(ua, body.ss, requestCookies, csrf);
+		return c.json(
+			{ status: 'Success', code: 0, message: 'Logged in Sucessfully', data: { csrf, requestCookies } },
+			200
+		);
+	}
 });
 
 app.onError((err, c) => {
