@@ -1,24 +1,23 @@
 meta {
-  name: get otp
+  name: login-auth
   type: http
   seq: 3
 }
 
 post {
-  url: https://www.swiggy.com/dapi/auth/sms-otp
+  url: http://localhost:3000/login/auth
   body: json
   auth: none
 }
 
 headers {
   Content-Type: application/json
+  Accept: application/json
   User-Agent: {{useragent}}
-  Cookie: {{swiggy-cookies}}
 }
 
 body:json {
   {
-    "otp": {{mobileNumber}},
-    "_csrf": {{swiggy-csrf}}
+    "otp": ""
   }
 }

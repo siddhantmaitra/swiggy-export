@@ -61,11 +61,14 @@ export async function generateOTP(userAgent: string, mobileNumber: string, reque
 
 export async function performLogin(userAgent: string, otp: string, requestCookies: string, csrf: string) {
 	let options = structuredClone(sw.constOpts);
-
-	options.body = JSON.stringify({
-		otp: otp,
-		_csrf: csrf,
-	});
+	if (otp) {
+		options.body = JSON.stringify({
+			otp: otp,
+			_csrf: csrf,
+		});
+	} else {
+		throw new SwiggyError('OTP not provided.', 400);
+	}
 
 	options.method = 'POST';
 	let headers = new Headers(options.headers);

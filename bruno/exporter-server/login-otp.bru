@@ -1,24 +1,23 @@
 meta {
-  name: verify otp
+  name: login-otp
   type: http
-  seq: 4
+  seq: 2
 }
 
 post {
-  url: https://www.swiggy.com/dapi/auth/otp-verify
+  url: http://localhost:3000/login/otp
   body: json
   auth: none
 }
 
 headers {
-  Cookie: {{swiggy-cookies}}
   Content-Type: application/json
+  Accept: application/json
   User-Agent: {{useragent}}
 }
 
 body:json {
   {
-    "otp": "",
-    "_csrf": {{csrf-token}}
+    "mobileNumber": {{mobileNumber}}
   }
 }
