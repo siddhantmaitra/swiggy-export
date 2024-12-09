@@ -44,9 +44,10 @@ app.onError((err, c) => {
 	// Generic error handler for other error types
 	return c.json(
 		{
-			error: 'Internal Server Error',
-			message: err.message,
-			cause: err.cause,
+			status: 'Failure',
+			error: err.message,
+			code: 500,
+			cause: err?.cause || null,
 		},
 		500
 	);
