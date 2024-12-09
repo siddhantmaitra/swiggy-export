@@ -1,17 +1,18 @@
 import { Hono } from 'hono';
+import { getCookie, setCookie } from 'hono/cookie';
 import * as exporter from 'exporter';
 import SwiggyError from 'exporter/SwiggyError';
 
 const app = new Hono();
 
 // Grab CSRF token and cookies for subsequent requests.
-app.get('/login/tokens', async (c) => {
+app.get('/login', async (c) => {
 	const ua = c.req.header('User-Agent') ?? '';
-	let data: any = {};
-	data = await exporter.visitSwiggy('');
+
+	const data = await exporter.visitSwiggy(ua);
 	if (Object.keys(data).length) {
-		c.res.headers.set('Set-Cookie', `request_cookies=${data.requestCookies};`);
-		c.res.headers.set('Set-Cookie', `request_csrf=${data.csrf};`);
+		setCookie(c, 'request_cookies', data.requestCookies, { path: '/', httpOnly: true });
+		setCookie(c, 'request_csrf', data.csrf, { path: '/login', httpOnly: true });
 		return c.json({ status: 'Success', code: 0, data: data }, 200);
 	}
 	return c.json('Failed to get CSRF token from swiggy.com', 500);
