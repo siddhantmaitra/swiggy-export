@@ -1,10 +1,11 @@
+import SwiggyError from './SwiggyError';
 import * as sw from './utils';
 
 export async function visitSwiggy(userAgent: string) {
 	let csrf: string;
 	let requestCookies: string;
-	if(!userAgent){
-		throw new Error ("User-Agent is not received", { cause: { code: 400, message: 'User-Agent is necessary' } });
+	if (!userAgent) {
+		throw new SwiggyError('User-Agent is necessary', 400);
 	}
 	let options = structuredClone(sw.constOpts);
 	let headers = new Headers(options.headers);
@@ -22,7 +23,7 @@ export async function visitSwiggy(userAgent: string) {
 	if (matches != null) {
 		csrf = matches[0].split('"')[1];
 	} else {
-		throw new Error('Unable to find csrf token');
+		throw new SwiggyError('Unable to get CSRF Token from swiggy.com', 500);
 	}
 
 	console.log('Visited Swiggy; Got csrf token');
@@ -46,7 +47,7 @@ export async function generateOTP(userAgent: string, mobileNumber: string, reque
 			_csrf: csrf,
 		});
 	} else {
-		throw new Error('Mobile number not provided.', { cause: { code: 400, message: 'Mobile number is necessary' } });
+		throw new SwiggyError('Mobile number not provided.', 400);
 	}
 
 	console.log('Hitting otp gen url ...');
@@ -54,7 +55,7 @@ export async function generateOTP(userAgent: string, mobileNumber: string, reque
 	const res = await val.json();
 
 	if (res?.statusCode != 0) {
-		throw new Error('Error in generating OTP.', { cause: { code: res.statusCode, message: res.statusMessage } });
+		throw new SwiggyError('Error in generating OTP.', res.statusCode, res.statusMessage);
 	}
 }
 
@@ -84,7 +85,8 @@ export async function performLogin(userAgent: string, otp: string, requestCookie
 	if (response.ok && res.statusCode === 0) {
 		console.log('Login Succesful');
 	} else {
-		throw new Error('Login Failed.', { cause: { code: res.statusCode, message: res.statusMessage } });
+		// throw new Error('Login Failed.', { cause: { code: res.statusCode, message: res.statusMessage } });
+		throw new SwiggyError('Login Failed.', res.statusCode, res.statusMessage);
 	}
 	return requestCookies;
 }
