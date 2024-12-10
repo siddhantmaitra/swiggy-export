@@ -46,12 +46,27 @@ app.post('/login/auth', async (c) => {
 	if (!requestCookies || !csrf) {
 		throw new SwiggyError('csrf or requestCookies are invalid', 400);
 	} else {
-		requestCookies = await exporter.performLogin(ua, body.ss, requestCookies, csrf);
+		requestCookies = await exporter.performLogin(ua, body.otp, requestCookies, csrf);
+		setCookie(c, 'request-cookies', requestCookies, { path: '/', httpOnly: true });
 		return c.json(
 			{ status: 'Success', code: 0, message: 'Logged in Sucessfully', data: { csrf, requestCookies } },
 			200
 		);
 	}
+});
+
+app.post('/orders', async (c) => {
+	const ua = c.req.header('User-Agent') ?? '';
+	const { lastOrderID, offSetID } = await c.req.json();
+
+	let requestCookies = getCookie(c, 'request-cookies');
+
+	if (!requestCookies) {
+		throw new SwiggyError('requestCookies are invalid', 400);
+	}
+	const data = await exporter.exportNewData(lastOrderID, requestCookies, ua, offSetID);
+
+	return c.json({ status: 'Success', code: 0, message: 'Fetched Orders Sucessfully', data: data }, 200);
 });
 
 app.onError((err, c) => {

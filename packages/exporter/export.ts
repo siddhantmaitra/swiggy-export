@@ -10,9 +10,8 @@ export async function exportNewData(
 	const orders: ExtractedOrder[] = await exportData(cookies, userAgent, offSetID);
 
 	if (lastOrderID) {
-		const targetIndex = orders.findIndex((item: ExtractedOrder) => item.order_id === lastOrderID);
-
-		if (targetIndex) {
+		const targetIndex = orders.findIndex((item: ExtractedOrder) => item.order_id.toString() === lastOrderID);
+		if (targetIndex >= 0) {
 			const precedingItems = orders.slice(0, targetIndex);
 			return precedingItems;
 		}
