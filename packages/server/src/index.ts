@@ -46,7 +46,8 @@ app.post('/login/auth', async (c) => {
 	if (!requestCookies || !csrf) {
 		throw new SwiggyError('csrf or requestCookies are invalid', 400);
 	} else {
-		requestCookies = await exporter.performLogin(ua, body.ss, requestCookies, csrf);
+		requestCookies = await exporter.performLogin(ua, body.otp, requestCookies, csrf);
+		setCookie(c, 'request-cookies', requestCookies, { path: '/', httpOnly: true });
 		return c.json(
 			{ status: 'Success', code: 0, message: 'Logged in Sucessfully', data: { csrf, requestCookies } },
 			200
