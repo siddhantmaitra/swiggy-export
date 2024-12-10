@@ -11,13 +11,13 @@ export const constOpts: RequestInit = {
 
 export async function hitURL(url: string, options: RequestInit) {
 	console.log('Request Hit url: ', url);
-	console.log('Request headers: ', options.headers);
-	console.log('Request payload: ', options.body);
+	// console.log('Request headers: ', options.headers);
+	// console.log('Request payload: ', options.body);
 
 	const response = await fetch(url, options);
 
 	console.log('Response status:  ', response.status, response.statusText);
-	console.log('Response headers: ', response.headers);
+	// console.log('Response headers: ', response.headers);
 
 	if (!response.ok) {
 		const message = `An error has occured: ${response.status} , ${response.statusText}`;
