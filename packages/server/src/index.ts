@@ -1,9 +1,11 @@
 import { Hono } from 'hono';
 import { getCookie, setCookie } from 'hono/cookie';
+import { logger } from 'hono/logger';
 import * as exporter from 'exporter';
 import SwiggyError from 'exporter/SwiggyError';
 
 const app = new Hono();
+app.use(logger());
 
 // Grab CSRF token and cookies for subsequent requests.
 app.get('/login', async (c) => {
