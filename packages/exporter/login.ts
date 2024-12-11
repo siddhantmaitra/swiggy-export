@@ -26,7 +26,6 @@ export async function visitSwiggy(userAgent: string) {
 		throw new SwiggyError('Unable to get CSRF Token from swiggy.com', 500);
 	}
 
-	console.log('Visited Swiggy; Got csrf token');
 	return { csrf, requestCookies };
 }
 
@@ -50,7 +49,6 @@ export async function generateOTP(userAgent: string, mobileNumber: string, reque
 		throw new SwiggyError('Mobile number not provided.', 400);
 	}
 
-	console.log('Hitting otp gen url ...');
 	const val = await sw.hitURL(sw.SWIGGY_GENERATE_OTP_URL, options);
 	const res = await val.json();
 
@@ -78,17 +76,12 @@ export async function performLogin(userAgent: string, otp: string, requestCookie
 	headers.set('User-Agent', userAgent);
 	options.headers = headers;
 
-	console.log('Hitting login url ...');
-
 	const response = await sw.hitURL(sw.SWIGGY_LOGIN_URL, options);
 	const res = await response.json();
 	// update them cookies and remove tid coz we logged in
 	requestCookies = await sw.buildCookieHeader(response, '_guest_tid');
 
-	if (response.ok && res.statusCode === 0) {
-		console.log('Login Succesful');
-	} else {
-		// throw new Error('Login Failed.', { cause: { code: res.statusCode, message: res.statusMessage } });
+	if (!response.ok && !(res.statusCode === 0)) {
 		throw new SwiggyError('Login Failed.', res.statusCode, res.statusMessage);
 	}
 	return requestCookies;

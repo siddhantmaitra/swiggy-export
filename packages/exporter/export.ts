@@ -48,7 +48,7 @@ async function exportData(cookies: string, userAgent: string, offSetID: string =
 			throw new SwiggyError('Order object array creation failed', 500, err.message);
 		}
 	} else {
-		console.log('Order fetch stopped.', { cause: { code: res.statusCode, message: res.statusMessage } });
+		// console.log('Order fetch stopped.', { cause: { code: res.statusCode, message: res.statusMessage } });
 	}
 	return processedOrders;
 }

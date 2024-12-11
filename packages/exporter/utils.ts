@@ -10,18 +10,12 @@ export const constOpts: RequestInit = {
 };
 
 export async function hitURL(url: string, options: RequestInit) {
-	console.log('Request Hit url: ', url);
-	// console.log('Request headers: ', options.headers);
-	// console.log('Request payload: ', options.body);
-
+	console.log('Request URL: ', url);
 	const response = await fetch(url, options);
-
-	console.log('Response status:  ', response.status, response.statusText);
-	// console.log('Response headers: ', response.headers);
+	console.log('Response Status:  ', response.status, response.statusText);
 
 	if (!response.ok) {
-		const message = `An error has occured: ${response.status} , ${response.statusText}`;
-		throw new SwiggyError(message, response.status, response.statusText);
+		throw new SwiggyError('Call to Swiggy failed', response.status, response.statusText);
 	}
 	return response;
 }
