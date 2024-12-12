@@ -23,7 +23,7 @@ export async function hitURL(url: string, options: RequestInit) {
 export const SWIGGY_BASE_URL = 'https://www.swiggy.com';
 export const SWIGGY_GENERATE_OTP_URL = `${SWIGGY_BASE_URL}/dapi/auth/sms-otp`;
 export const SWIGGY_LOGIN_URL = `${SWIGGY_BASE_URL}/dapi/auth/otp-verify`;
-export const SWIGGY_ORDER_URL = `${SWIGGY_BASE_URL}/mapi/order/all?order_id=`;
+export const SWIGGY_ORDER_URL = `${SWIGGY_BASE_URL}/dapi/order/all?order_id=`;
 
 export async function buildCookieHeader(response: Response, cookieNameToRemove: string | null = null) {
 	const cookieJar: Set<String> = new Set();
