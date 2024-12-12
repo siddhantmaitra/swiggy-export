@@ -1,0 +1,250 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Swiggy-Export API",
+		"description": "API documentation for Swiggy-Export server.",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/login": {
+			"get": {
+				"summary": "Acquire CSRF Token",
+				"operationId": "acquireCsrfToken",
+				"parameters": [
+					{
+						"name": "User-Agent",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successfully acquired CSRF token",
+						"headers": {
+							"Set-Cookie": {
+								"schema": {
+									"type": "string",
+									"example": ["request-csrf", "request-cookies"]
+								}
+							}
+						},
+
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SwiggySuccessResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Failed to acquire CSRF token",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SwiggyError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/login/otp": {
+			"post": {
+				"summary": "Generate OTP",
+				"operationId": "generateOtp",
+				"parameters": [
+					{
+						"name": "User-Agent",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"mobileNumber": { "type": "string", "required": true }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successfully generated OTP",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SwiggySuccessResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid request data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SwiggyError"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Call to Swiggy Failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SwiggyError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/login/auth": {
+			"post": {
+				"summary": "Authenticate User",
+				"operationId": "loginUser",
+				"parameters": [
+					{
+						"name": "User-Agent",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"otp": { "type": "string", "required": true }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successfully logged in",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SwiggySuccessResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid request data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SwiggyError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/orders": {
+			"post": {
+				"summary": "Fetch Orders",
+				"description": "Fetch orders from swiggy history. Max 1 year.",
+				"operationId": "fetchOrders",
+				"parameters": [
+					{
+						"name": "User-Agent",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"lastOrderID": {
+										"type": "string",
+										"description": "optional field to get items ordered after the last fetched order. If data not found in fetched array, empty array is returned"
+									},
+									"offSetID": {
+										"type": "string",
+										"description": "optional field to get order data starting from orderID used as offset"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successfully fetched orders",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SwiggySuccessResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SwiggyError"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"SwiggyError": {
+				"type": "object",
+				"properties": {
+					"status": { "type": "string", "example": "Failure" },
+					"error": { "type": "string" },
+					"code": { "type": "integer", "example": -1 },
+					"cause": { "type": "string" }
+				}
+			},
+			"SwiggySuccessResponse": {
+				"type": "object",
+				"properties": {
+					"status": { "type": "string", "example": "Success" },
+					"code": { "type": "integer", "example": 0 },
+					"message": { "type": "string" },
+					"data": { "type": "object", "additionalProperties": true }
+				}
+			}
+		}
+	}
+}

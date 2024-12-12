@@ -3,9 +3,15 @@ import { getCookie, setCookie } from 'hono/cookie';
 import { logger } from 'hono/logger';
 import * as exporter from 'exporter';
 import SwiggyError from 'exporter/SwiggyError';
+import { apiReference } from '@scalar/hono-api-reference';
+import openapiJson from '../public/openapi.json';
 
 const app = new Hono();
 app.use(logger());
+
+//OpenAPI
+app.get('/', apiReference({ spec: { content: openapiJson } }));
+app.get('/openapi', (c) => c.json(openapiJson));
 
 // Grab CSRF token and cookies for subsequent requests.
 app.get('/login', async (c) => {
