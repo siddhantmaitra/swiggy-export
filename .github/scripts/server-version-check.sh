@@ -15,8 +15,7 @@ previous_major=$(echo $previous_version | cut -d. -f1)
 
 echo "true"
 echo "$current_version"
-echo $PWD
-cd ../..
+
 # # Check if major version has changed
 # if [ "$current_major" != "$previous_major" ]; then
 #   echo "true"

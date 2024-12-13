@@ -10,7 +10,8 @@ cd packages/server
 bun install
 # bun build --compile src/index.ts --target=bun-linux-x64 --outfile=swm
 bun build src/index.ts --compile --minify --sourcemap --bytecode --target=bun-linux-x64 --outfile=swm
-
+cd ../.. 
+ls -alR 
 # Create GitHub release
 gh release create server-v$VERSION \
   swm \
