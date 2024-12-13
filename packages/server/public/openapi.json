@@ -233,7 +233,9 @@
 					"status": { "type": "string", "example": "Failure" },
 					"error": { "type": "string" },
 					"code": { "type": "integer", "example": -1 },
-					"cause": { "type": "string" }
+					"cause": { "type": "string" },
+					"txnID": { "type": "string" },
+					"sessionID": { "type": "string" }
 				}
 			},
 			"SwiggySuccessResponse": {
