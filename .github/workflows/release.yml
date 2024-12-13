@@ -3,7 +3,7 @@ name: Server Package Release Workflow
 on:
   push:
     branches:
-      - main
+      - ci-test
     paths:
       - 'packages/server/package.json'
       - 'packages/server/src/**'
