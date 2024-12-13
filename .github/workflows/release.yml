@@ -35,7 +35,7 @@ jobs:
         # if: steps.version-check.outputs.is_new_major == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.LOGIN_TOKEN }}
-          PORT: ${{}}
+          PORT: ${{vars.SERVER_PORT}}
         run: |
           chmod +x .github/scripts/server-build-release.sh
           .github/scripts/server-build-release.sh ${{ steps.version-check.outputs.version }}

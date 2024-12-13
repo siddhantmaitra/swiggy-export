@@ -14,5 +14,5 @@ bun build src/index.ts --compile --minify --sourcemap --bytecode --target=bun-li
 # Create GitHub release
 gh release create server-v$VERSION \
   swm \
-  --title "Server v$VERSION" : TCI est Release \
+  --title "Server v$VERSION" : CI test Release \
   --notes "Testing CI release of the server package. Please Ignore"
