@@ -8,10 +8,11 @@ cd packages/server
 
 # Build the server binary
 bun install
-bun build --compile src/index.ts --target=bun-linux-x64 --outfile=swm
+# bun build --compile src/index.ts --target=bun-linux-x64 --outfile=swm
+bun build src/index.ts --compile --minify --sourcemap --bytecode --target=bun-linux-x64 --outfile=swm
 
 # Create GitHub release
 gh release create server-v$VERSION \
   swm \
-  --title "Server v$VERSION" \
-  --notes "Major version release of the server package"
+  --title "Server v$VERSION" : TCI est Release \
+  --notes "Testing CI release of the server package. Please Ignore"
