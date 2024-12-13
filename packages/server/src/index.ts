@@ -78,6 +78,7 @@ app.post('/orders', async (c) => {
 });
 
 app.onError((err, c) => {
+	console.error(`[Error] ${err.message}`);
 	if (err instanceof SwiggyError) {
 		return c.json(
 			{
@@ -85,6 +86,8 @@ app.onError((err, c) => {
 				error: err.message,
 				code: err.statusCode,
 				cause: err.reason || null,
+				txnID: c.req.header('X-Txn-ID') || null,
+				sessionID: getCookie(c, 'sessionID') || null,
 			},
 			err.statusCode === 400 ? 400 : 500
 		);
@@ -97,6 +100,8 @@ app.onError((err, c) => {
 			error: err.message,
 			code: 500,
 			cause: err?.cause || null,
+			txnID: c.req.header('X-Txn-ID') || null,
+			sessionID: getCookie(c, 'sessionID') || null,
 		},
 		500
 	);
