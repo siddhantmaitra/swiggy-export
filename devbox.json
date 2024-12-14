@@ -1,10 +1,14 @@
 {
 	"$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
+	"env": {
+		"PORT": "4324"
+	},
 	"packages": ["bun@latest", "act@0.2.70", "gh@latest"],
 	"shell": {
 		"init_hook": ["codium ."],
 		"scripts": {
-			"test": ["echo \"Error: no test specified\" && exit 1"]
+			"test": ["echo \"Error: no test specified\" && exit 1"],
+			"server-tag": ["git tag server-v$(jq -r '.version' packages/server/package.json)", "git tag"]
 		}
 	}
 }
