@@ -6,7 +6,6 @@ on:
       - ci-test
     # paths:
     #   - 'packages/server/package.json'
-    #   - 'packages/server/src/**'
 
 jobs:
   check-and-release:
@@ -21,7 +20,7 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Check Server Version
+      - name: Check Package Version - Server
         id: version-check
         run: |
           chmod +x .github/scripts/server-version-check.sh
@@ -31,7 +30,7 @@ jobs:
           echo "is_new_major=$is_new_major" >> $GITHUB_OUTPUT
           echo "version=$version" >> $GITHUB_OUTPUT
 
-      - name: Build and Release Server
+      - name: Build Server - Linux
         # if: steps.version-check.outputs.is_new_major == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.LOGIN_TOKEN }}
@@ -39,3 +38,12 @@ jobs:
         run: |
           chmod +x .github/scripts/server-build-release.sh
           .github/scripts/server-build-release.sh ${{ steps.version-check.outputs.version }}
+
+      - name: Release Binaries
+        uses: softprops/action-gh-release@v2
+        # if: steps.version-check.outputs.is_new_major == 'true'
+        with:
+          generate_release_notes: true
+          file: |
+            swm-${{ steps.version-check.outputs.version }}
+            swm-win-${{ steps.version-check.outputs.version }}.exe
