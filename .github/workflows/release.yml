@@ -40,6 +40,8 @@ jobs:
           .github/scripts/server-build-release.sh ${{ steps.version-check.outputs.version }}
 
       - name: Release Binaries
+        env:
+          GITHUB_TOKEN: ${{ secrets.SERVER_TOKEN }}
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         # if: steps.version-check.outputs.is_new_major == 'true'
