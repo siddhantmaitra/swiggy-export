@@ -44,6 +44,6 @@ jobs:
         # if: steps.version-check.outputs.is_new_major == 'true'
         with:
           generate_release_notes: true
-          file: |
+          files: |
             swm-${{ steps.version-check.outputs.version }}
             swm-win-${{ steps.version-check.outputs.version }}.exe
