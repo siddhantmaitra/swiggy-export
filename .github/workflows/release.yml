@@ -33,7 +33,7 @@ jobs:
       - name: Build Server - Linux
         # if: steps.version-check.outputs.is_new_major == 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.LOGIN_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SERVICE_TOKEN }}
           PORT: ${{vars.SERVER_PORT}}
         run: |
           chmod +x .github/scripts/server-build-release.sh
