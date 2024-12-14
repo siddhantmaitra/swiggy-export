@@ -2,10 +2,8 @@ name: Server Package Release Workflow
 
 on:
   push:
-    branches:
-      - ci-test
     tags:
-      - "*.*.*"
+      - "server-v*.*.*"
     # paths:
     #   - 'packages/server/package.json'
 
@@ -43,6 +41,7 @@ jobs:
 
       - name: Release Binaries
         uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         # if: steps.version-check.outputs.is_new_major == 'true'
         with:
           generate_release_notes: true
