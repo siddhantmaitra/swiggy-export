@@ -13,13 +13,12 @@ previous_version=$(git tag --sort=-v:refname | grep '^server-v' | head -n 1 | se
 current_major=$(echo $current_version | cut -d. -f1)
 previous_major=$(echo $previous_version | cut -d. -f1)
 
-echo "true"
-echo "$current_version"
 
-# # Check if major version has changed
-# if [ "$current_major" != "$previous_major" ]; then
-#   echo "true"
-#   echo "$current_version"
-# else
-#   echo "false"
-# fi
+# Check if major version has changed
+if [ "$current_major" != "$previous_major" ]; then
+  echo "true"
+  echo "$current_version"
+else
+  echo "WARN: Current and previous versions are same!"
+  echo "false"
+fi

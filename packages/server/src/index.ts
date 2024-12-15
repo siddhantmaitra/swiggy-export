@@ -2,16 +2,13 @@ import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { logger } from 'hono/logger';
 import SwiggyError from 'exporter/SwiggyError';
-import { apiReference } from '@scalar/hono-api-reference';
-import openapiJson from '../public/openapi.json';
+// import { apiReference } from '@scalar/hono-api-reference';
+// import openapiJson from '../public/openapi.json';
 import loginRoutes from './routes/login';
 import orderRoutes from './routes/swiggy-orders';
 
 const app = new Hono();
 app.use(logger());
-
-//OpenAPI
-app.get('/', apiReference({ spec: { content: openapiJson } }));
 
 app.route('/login', loginRoutes);
 app.route('/orders', orderRoutes);
@@ -53,6 +50,16 @@ app.onError((err, c) => {
 		500
 	);
 });
+
+if (process.env.NODE_ENV === 'dev') {
+	const setupDocs = async () => {
+		let openapiJson = await import('../public/openapi.json');
+		let apiReference = await import('@scalar/hono-api-reference').then((module) => module.apiReference);
+		//OpenAPI
+		app.get('/', apiReference({ spec: { content: openapiJson } }));
+	};
+	setupDocs;
+}
 
 export default {
 	port: Number(process.env.PORT) || 3000,
