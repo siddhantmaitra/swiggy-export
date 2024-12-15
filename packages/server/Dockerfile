@@ -4,7 +4,7 @@ FROM oven/bun:alpine AS builder
 WORKDIR /app
 
 # Copy package files first for better caching
-COPY packages/server/package.json ./
+COPY package.json ./
 
 
 # Copy rest of the files
