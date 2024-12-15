@@ -21,6 +21,11 @@ WORKDIR /app
 # Copy only the compiled binary
 COPY --from=builder /app/packages/server/swm ./swm
 
+# Add debugging steps
+RUN ls -l ./swm
+RUN file ./swm
+RUN chmod +x ./swm
+
 # Expose the port from an environment variable
 ENV PORT=$SERVER_PORT
 EXPOSE $PORT
