@@ -3,7 +3,7 @@ name: Server Package Release Workflow
 on:
   push:
     tags:
-      - "server-*.*.0"
+      - "server-*.0.0"
 
 jobs:
   server-binary-release:
