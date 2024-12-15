@@ -44,7 +44,7 @@ jobs:
   server-docker-release:
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}-server
+      IMAGE_NAME: ${{ github.repository }}
       GITHUB_TOKEN: ${{ secrets.SERVER_TOKEN }}
 
     runs-on: ubuntu-latest

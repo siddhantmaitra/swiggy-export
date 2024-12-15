@@ -1,5 +1,5 @@
 # Build stage
-FROM oven/bun:alpine AS builder
+FROM oven/bun:debian AS builder
 
 WORKDIR /app
 
@@ -11,6 +11,10 @@ RUN bun install
 
 # Build the server package
 WORKDIR /app/packages/server
+ARG SERVER_PORT
+
+ENV PORT=$SERVER_PORT
+
 RUN bun build src/index.ts --compile --outfile swm
 
 # Final stage
@@ -21,14 +25,11 @@ WORKDIR /app
 # Copy only the compiled binary
 COPY --from=builder /app/packages/server/swm ./swm
 
-# Add debugging steps
-RUN ls -l ./swm
-# RUN file ./swm
+# Ensure the binary is executable
 RUN chmod +x ./swm
 
-# Expose the port from an environment variable
-ENV PORT=$SERVER_PORT
-EXPOSE $PORT
+# Expose a default port for documentation purposes (optional)
+# EXPOSE 4324
 
-# Run the binary
+# The PORT can be dynamically passed at runtime using `-e`
 CMD ["./swm"]

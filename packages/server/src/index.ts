@@ -22,8 +22,8 @@ app.get('/health', (c) => {
 });
 
 app.onError((err, c) => {
-	console.error(`[Error] ${err.message}`);
 	if (err instanceof SwiggyError) {
+		console.error(`[Error] ${err.message} | ${err.reason}`);
 		return c.json(
 			{
 				status: 'Failure',
@@ -36,7 +36,7 @@ app.onError((err, c) => {
 			err.statusCode === 400 ? 400 : 500
 		);
 	}
-
+	console.error(`[Error] ${err.message} | ${err.cause}`);
 	// Generic error handler for other error types
 	return c.json(
 		{
@@ -66,4 +66,4 @@ export default {
 	fetch: app.fetch,
 };
 
-console.log(`Server started on http://localhost:${process.env.PORT || 3000}`);
+// console.log(`Server started on http://localhost:${process.env.PORT || 3000}`);
