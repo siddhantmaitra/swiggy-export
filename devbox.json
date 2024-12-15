@@ -1,17 +1,15 @@
 {
-  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
-  "packages": [
-    "bun@latest",
-    "act@0.2.70"
-  ],
-  "shell": {
-    "init_hook": [
-      "codium ."
-    ],
-    "scripts": {
-      "test": [
-        "echo \"Error: no test specified\" && exit 1"
-      ]
-    }
-  }
+	"$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
+	"env": {
+		"SERVER_PORT": "4325",
+		"NODE_ENV": "development"
+	},
+	"packages": ["bun@latest", "act@0.2.70", "gh@latest"],
+	"shell": {
+		"init_hook": ["codium ."],
+		"scripts": {
+			"test": ["echo \"Error: no test specified\" && exit 1"],
+			"server-tag": ["git tag server-$(jq -r '.version' packages/server/package.json)", "git tag"]
+		}
+	}
 }

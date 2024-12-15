@@ -2,16 +2,13 @@ import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { logger } from 'hono/logger';
 import SwiggyError from 'exporter/SwiggyError';
-import { apiReference } from '@scalar/hono-api-reference';
-import openapiJson from '../public/openapi.json';
+// import { apiReference } from '@scalar/hono-api-reference';
+// import openapiJson from '../public/openapi.json';
 import loginRoutes from './routes/login';
 import orderRoutes from './routes/swiggy-orders';
 
 const app = new Hono();
 app.use(logger());
-
-//OpenAPI
-app.get('/', apiReference({ spec: { content: openapiJson } }));
 
 app.route('/login', loginRoutes);
 app.route('/orders', orderRoutes);
@@ -25,8 +22,8 @@ app.get('/health', (c) => {
 });
 
 app.onError((err, c) => {
-	console.error(`[Error] ${err.message}`);
 	if (err instanceof SwiggyError) {
+		console.error(`[Error] ${err.message} | ${err.reason}`);
 		return c.json(
 			{
 				status: 'Failure',
@@ -39,7 +36,7 @@ app.onError((err, c) => {
 			err.statusCode === 400 ? 400 : 500
 		);
 	}
-
+	console.error(`[Error] ${err.message} | ${err.cause}`);
 	// Generic error handler for other error types
 	return c.json(
 		{
@@ -54,9 +51,19 @@ app.onError((err, c) => {
 	);
 });
 
+if (process.env.NODE_ENV === 'development') {
+	const setupDocs = async () => {
+		let openapiJson = await import('../public/openapi.json');
+		let apiReference = await import('@scalar/hono-api-reference').then((module) => module.apiReference);
+		//OpenAPI
+		app.get('/', apiReference({ spec: { content: openapiJson } }));
+	};
+	setupDocs();
+}
+
 export default {
 	port: Number(process.env.PORT) || 3000,
 	fetch: app.fetch,
 };
 
-console.log(`Server started on http://localhost:${process.env.PORT}`);
+// console.log(`Server started on http://localhost:${process.env.PORT || 3000}`);
