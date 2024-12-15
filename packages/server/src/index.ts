@@ -51,14 +51,14 @@ app.onError((err, c) => {
 	);
 });
 
-if (process.env.NODE_ENV === 'dev') {
+if (process.env.NODE_ENV === 'development') {
 	const setupDocs = async () => {
 		let openapiJson = await import('../public/openapi.json');
 		let apiReference = await import('@scalar/hono-api-reference').then((module) => module.apiReference);
 		//OpenAPI
 		app.get('/', apiReference({ spec: { content: openapiJson } }));
 	};
-	setupDocs;
+	setupDocs();
 }
 
 export default {
