@@ -25,7 +25,7 @@ jobs:
           SERVER_PORT: ${{vars.SERVER_PORT}}
         run: |
           echo "SERVER_PORT : $SERVER_PORT"
-          echo "NODE ENV": $NODE_ENV"
+          echo "NODE ENV: $NODE_ENV"
           TAG_NAME="${{ github.ref_name }}"
           VERSION="${TAG_NAME#server-}"
           chmod +x .github/scripts/server-build-release.sh
