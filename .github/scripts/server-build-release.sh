@@ -11,6 +11,9 @@ bun build packages/server/src/index.ts --compile --minify --sourcemap --bytecode
 # bun build packages/server/src/index.ts --compile --minify --sourcemap --bytecode --target=bun-windows-x64-modern --outfile=swm-win-${VERSION}
 
 ./swm-${VERSION}
+
+
+sleep 20 && kill $(pidof swm-${VERSION})
 # # Create GitHub release
 # gh release create server-v$VERSION \
 #   swm \

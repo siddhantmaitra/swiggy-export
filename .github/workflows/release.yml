@@ -23,6 +23,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SERVER_TOKEN }}
           SERVER_PORT: ${{vars.SERVER_PORT}}
+          NODE_ENV: ${{vars.NODE_ENV}}
         run: |
           echo "SERVER_PORT : $SERVER_PORT"
           echo "NODE ENV: $NODE_ENV"
