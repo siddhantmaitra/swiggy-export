@@ -65,4 +65,4 @@ export default {
 	fetch: app.fetch,
 };
 
-console.log(`Server started on http://localhost:${Bun.env.SERVER_PORT || 3000}`);
+// console.log(`Server started on http://localhost:${Bun.env.SERVER_PORT || 3000}`);
