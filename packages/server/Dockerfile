@@ -14,6 +14,7 @@ WORKDIR /app/packages/server
 ARG SERVER_PORT
 
 ENV PORT=$SERVER_PORT
+ENV NODE_ENV production
 
 RUN bun build src/index.ts --compile --outfile swm
 

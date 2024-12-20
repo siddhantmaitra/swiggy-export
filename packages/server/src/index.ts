@@ -51,7 +51,7 @@ app.onError((err, c) => {
 	);
 });
 
-if (process.env.NODE_ENV === 'development') {
+if (Bun.env.NODE_ENV === 'development') {
 	const setupDocs = async () => {
 		let openapiJson = await import('../public/openapi.json');
 		let apiReference = await import('@scalar/hono-api-reference').then((module) => module.apiReference);
@@ -60,10 +60,9 @@ if (process.env.NODE_ENV === 'development') {
 	};
 	setupDocs();
 }
-
 export default {
-	port: Number(process.env.PORT) || 3000,
+	port: Number(Bun.env.SERVER_PORT) || 3000,
 	fetch: app.fetch,
 };
 
-// console.log(`Server started on http://localhost:${process.env.PORT || 3000}`);
+console.log(`Server started on http://localhost:${Bun.env.SERVER_PORT || 3000}`);
