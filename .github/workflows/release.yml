@@ -2,8 +2,8 @@ name: Server Package Release Workflow
 
 on:
   push:
-     branches:
-      - ci-test03
+    tags:
+      - "test-*.0.0"
 
 jobs:
   server-binary-release:
@@ -37,7 +37,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SERVER_TOKEN }}
         uses: softprops/action-gh-release@v2
-        # if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           generate_release_notes: true
           files: |
