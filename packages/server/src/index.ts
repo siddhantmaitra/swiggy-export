@@ -66,4 +66,4 @@ export default {
 	fetch: app.fetch,
 };
 
-// console.log(`Server started on http://localhost:${process.env.PORT || 3000}`);
+console.log(`Server started on http://localhost:${process.env.PORT || 3000}`);

@@ -3,7 +3,9 @@ name: Server Package Release Workflow
 on:
   push:
     tags:
-      - "server-*.*.0"
+      - "test-*"
+    # tags:
+    #   - "server-*.*.0"
 env:
   GITHUB_TOKEN: ${{ secrets.SERVER_TOKEN }}
   NODE_ENV: ${{vars.NODE_ENV}}
