@@ -9,7 +9,7 @@ bun install
 
 echo "FOUND NODE_ENV: ${NODE_ENV}"
 
-NODE_ENV=$NODE_ENV bun build packages/server/src/index.ts \
+bun build packages/server/src/index.ts \
   --define "process.env.NODE_ENV='${NODE_ENV}'" \
   --compile \
   --minify \
