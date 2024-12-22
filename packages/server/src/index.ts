@@ -51,7 +51,7 @@ app.onError((err, c) => {
 	);
 });
 
-if (Bun.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
 	const setupDocs = async () => {
 		let openapiJson = await import('../public/openapi.json');
 		let apiReference = await import('@scalar/hono-api-reference').then((module) => module.apiReference);
