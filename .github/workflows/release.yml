@@ -1,9 +1,12 @@
-name: Server Package Release Workflow
+name: Server Release
 
 on:
   push:
     tags:
       - "server-*.*.0"
+env:
+  GITHUB_TOKEN: ${{ secrets.SERVER_TOKEN }}
+  NODE_ENV: ${{vars.NODE_ENV}}
 
 jobs:
   server-binary-release:
@@ -20,19 +23,16 @@ jobs:
 
       - name: Build Server Binaries
         id: build
-        env:
-          GITHUB_TOKEN: ${{ secrets.SERVER_TOKEN }}
-          PORT: ${{vars.SERVER_PORT}}
+        
         run: |
           TAG_NAME="${{ github.ref_name }}"
           VERSION="${TAG_NAME#server-}"
           chmod +x .github/scripts/server-build-release.sh
-          .github/scripts/server-build-release.sh $VERSION
+          .github/scripts/server-build-release.sh $VERSION ${{env.NODE_ENV}}
           echo "semver=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Release Server Binaries
-        env:
-          GITHUB_TOKEN: ${{ secrets.SERVER_TOKEN }}
+        
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -81,8 +81,6 @@ jobs:
           context: .  # Use root of the monorepo
           file: packages/server/Dockerfile  # Specify the Dockerfile path
           push: true
-          build-args: |
-            SERVER_PORT=${{ vars.SERVER_PORT }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 

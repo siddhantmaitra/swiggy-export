@@ -1,35 +1,39 @@
+
+ARG NODE_ENV=development
 # Build stage
-FROM oven/bun:debian AS builder
+FROM oven/bun:alpine AS builder
 
 WORKDIR /app
-
 # Copy the entire monorepo
+
 COPY . .
 
-# Install dependencies for the entire workspace
 RUN bun install
 
-# Build the server package
 WORKDIR /app/packages/server
-ARG SERVER_PORT
 
-ENV PORT=$SERVER_PORT
+ENV NODE_ENV=production
 
-RUN bun build src/index.ts --compile --outfile swm
+RUN bun build src/index.ts --minify --sourcemap --bytecode --target=bun --outdir=dist
+# RUN NODE_ENV=$NODE_ENV bun build src/index.ts --compile --minify --sourcemap --bytecode --target=bun-linux-x64-modern --outfile=swm
 
-# Final stage
-FROM debian:bookworm-slim
+# use --target=debug for debug builds
+FROM oven/bun:alpine AS debug
 
 WORKDIR /app
 
-# Copy only the compiled binary
-COPY --from=builder /app/packages/server/swm ./swm
+COPY --from=builder /app .
 
-# Ensure the binary is executable
-RUN chmod +x ./swm
+CMD [ "sh" ]
 
-# Expose a default port for documentation purposes (optional)
-# EXPOSE 4324
 
-# The PORT can be dynamically passed at runtime using `-e`
-CMD ["./swm"]
+# Final runtime stage
+FROM oven/bun:alpine
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY --from=builder /app/packages/server/dist ./dist
+
+ENTRYPOINT [ "bun", "run", "./dist/index.js" ]
