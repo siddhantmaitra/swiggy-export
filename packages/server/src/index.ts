@@ -2,8 +2,6 @@ import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { logger } from 'hono/logger';
 import SwiggyError from 'exporter/SwiggyError';
-// import { apiReference } from '@scalar/hono-api-reference';
-// import openapiJson from '../public/openapi.json';
 import loginRoutes from './routes/login';
 import orderRoutes from './routes/swiggy-orders';
 
@@ -51,7 +49,7 @@ app.onError((err, c) => {
 	);
 });
 
-if (Bun.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
 	const setupDocs = async () => {
 		let openapiJson = await import('../public/openapi.json');
 		let apiReference = await import('@scalar/hono-api-reference').then((module) => module.apiReference);
