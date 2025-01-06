@@ -1,12 +1,12 @@
 meta {
-  name: login
+  name: otp
   type: http
-  seq: 1
+  seq: 2
 }
 
-get {
-  url: http://localhost:3000/login
-  body: none
+post {
+  url: http://localhost:3000/login/otp
+  body: json
   auth: none
 }
 
@@ -14,4 +14,10 @@ headers {
   Content-Type: application/json
   Accept: application/json
   User-Agent: {{ua-s20plus}}
+}
+
+body:json {
+  {
+    "mobileNumber": {{mobileNumber}}
+  }
 }

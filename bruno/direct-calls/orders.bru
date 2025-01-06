@@ -1,0 +1,21 @@
+meta {
+  name: orders
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://www.swiggy.com/dapi/order/all?order_id=
+  body: none
+  auth: none
+}
+
+params:query {
+  order_id: 
+}
+
+headers {
+  Cookie: _is_logged_in=1; _session_tid=4a2743e4161e7c10e8cd73a66222007b11b771976c707d1df4c2e0b8462637950eed88dc293cc950da8064d880c3f2b80330fa474b8405d5b453c31b9b99c35480678661f0271cd7b45576d055586025d5c4687931119fff00615e1fc3b705f0859ded8e37a6313aecbcbf358b0d4ca9; _device_id=92027480-121c-259b-3cdf-17329d61bcfe
+  Content-Type: application/json
+  User-Agent: {{ua-chrome-win}}
+}
