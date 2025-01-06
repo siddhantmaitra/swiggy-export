@@ -4,7 +4,7 @@
 		"SERVER_PORT": "4325",
 		"NODE_ENV": "development"
 	},
-	"packages": ["bun@latest", "flyctl@0.3.49", "gh@latest"],
+	"packages": ["bun@latest", "flyctl@0.3.49", "gh@latest", "upx@latest"],
 	"shell": {
 		"init_hook": ["codium ."],
 		"scripts": {
