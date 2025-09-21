@@ -145,53 +145,9 @@
         }
       }
     },
-    "upx@latest": {
-      "last_modified": "2024-12-23T21:10:33Z",
-      "resolved": "github:NixOS/nixpkgs/de1864217bfa9b5845f465e771e0ecb48b30e02d#upx",
-      "source": "devbox-search",
-      "version": "4.2.4",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/91rxk1apx0ilhm9ys8vm94nqx5l04gyq-upx-4.2.4",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/91rxk1apx0ilhm9ys8vm94nqx5l04gyq-upx-4.2.4"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/p9351xp2hk4k92pn8gk9j9ahhwck9z4m-upx-4.2.4",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/p9351xp2hk4k92pn8gk9j9ahhwck9z4m-upx-4.2.4"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/llvxrnkfr22fkhdhqk4k6piyqs555adn-upx-4.2.4",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/llvxrnkfr22fkhdhqk4k6piyqs555adn-upx-4.2.4"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/qzrab2wnqiva6s28mfgg7zq03xw1x8dw-upx-4.2.4",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/qzrab2wnqiva6s28mfgg7zq03xw1x8dw-upx-4.2.4"
-        }
-      }
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2025-06-20T02:24:11Z",
+      "resolved": "github:NixOS/nixpkgs/076e8c6678d8c54204abcb4b1b14c366835a58bb?lastModified=1750386251&narHash=sha256-1ovgdmuDYVo5OUC5NzdF%2BV4zx2uT8RtsgZahxidBTyw%3D"
     }
   }
 }

@@ -1,12 +1,13 @@
 {
 	"$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
 	"env": {
-		"SERVER_PORT": "4325",
-		"NODE_ENV": "development"
+		"SERVER_PORT": "3050",
+		"NODE_ENV": "development",
+		"IDE": "zeditor"
 	},
-	"packages": ["bun@latest", "flyctl@0.3.49", "gh@latest", "upx@latest"],
+	"packages": ["bun@latest", "flyctl@0.3.49", "gh@latest"],
 	"shell": {
-		"init_hook": ["codium ."],
+		"init_hook": ["$IDE ."],
 		"scripts": {
 			"test": ["echo \"Error: no test specified\" && exit 1"],
 			"server-tag": ["git tag server-$(jq -r '.version' packages/server/package.json)", "git tag"]
