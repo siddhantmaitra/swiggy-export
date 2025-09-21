@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://localhost:3000/orders
+  url: http://localhost:{{PORT}}/orders
   body: json
   auth: none
 }
@@ -13,7 +13,7 @@ post {
 headers {
   Content-Type: application/json
   Accept: application/json
-  User-Agent: {{ua-s20plus}}
+  User-Agent: {{ua-iphone14}}
 }
 
 body:json {
@@ -21,4 +21,20 @@ body:json {
     "lastOrderID": "",
     "offSetID": ""
   }
+}
+
+script:pre-request {
+  const offset = bru.getVar('offsetid');
+  let body = req.getBody();
+  body.offSetID = offset;
+  req.setBody(body);
+  
+  
+}
+
+script:post-response {
+  let body = res.getBody();
+  const id = body.data?.length > 0 ? body.data[body.data.length -1]?.order_id : "";  
+  
+  bru.setVar("offsetid",id);
 }
