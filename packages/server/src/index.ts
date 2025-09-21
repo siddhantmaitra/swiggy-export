@@ -20,33 +20,23 @@ app.get('/health', (c) => {
 });
 
 app.onError((err, c) => {
+	const e = {
+		status: 'Failure',
+		error: err.message,
+		code: 500,
+		cause: err?.cause,
+		txnID: c.req.header('X-Txn-ID') || null,
+		sessionID: getCookie(c, 'sessionID') || null,
+	};
 	if (err instanceof SwiggyError) {
 		console.error(`[Error] ${err.message} | ${err.reason}`);
-		return c.json(
-			{
-				status: 'Failure',
-				error: err.message,
-				code: err.statusCode,
-				cause: err.reason || null,
-				txnID: c.req.header('X-Txn-ID') || null,
-				sessionID: getCookie(c, 'sessionID') || null,
-			},
-			err.statusCode === 400 ? 400 : 500
-		);
+		e.code = err.statusCode;
+		e.cause = err?.reason ?? null;
+		return c.json(err.statusCode === 400 ? 400 : 500);
 	}
 	console.error(`[Error] ${err.message} | ${err.cause}`);
 	// Generic error handler for other error types
-	return c.json(
-		{
-			status: 'Failure',
-			error: err.message,
-			code: 500,
-			cause: err?.cause || null,
-			txnID: c.req.header('X-Txn-ID') || null,
-			sessionID: getCookie(c, 'sessionID') || null,
-		},
-		500
-	);
+	return c.json(e, 500);
 });
 
 if (process.env.NODE_ENV !== 'production') {
